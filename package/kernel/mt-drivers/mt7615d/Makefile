@@ -185,7 +185,7 @@ TAR_CMD=$(HOST_TAR) -C $(1)/ $(TAR_OPTIONS)
 define KernelPackage/mt7615d
     CATEGORY:=Kernel modules
     TITLE:=MTK wifi AP driver
-    DEPENDS:=@TARGET_ramips
+    DEPENDS:=@TARGET_ramips +@KERNEL_WIRELESS_EXT
     KCONFIG:= \
         CONFIG_PCI_MSI=y \
 		CONFIG_NET_SCH_FQ=y
