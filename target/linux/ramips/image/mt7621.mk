@@ -1671,6 +1671,15 @@ define Device/meig_slt866
 endef
 TARGET_DEVICES += meig_slt866
 
+define Device/mercury_mac2600r
+  $(Device/uimage-lzma-loader)
+  IMAGE_SIZE := 7808k
+  DEVICE_MODEL := MAC2600R
+  DEVICE_VENDOR := Mercury
+  DEVICE_PACKAGES += kmod-mt7615d wireless-tools mt_wifi -wpad-openssl
+endef
+TARGET_DEVICES += mercury_mac2600r
+
 define Device/mercusys_mr70x-v1
   $(Device/dsa-migration)
   $(Device/tplink-safeloader)
@@ -2834,7 +2843,7 @@ define Device/xiaomi_redmi-router-ac2100
   $(Device/xiaomi_nand_separate)
   DEVICE_MODEL := Redmi Router AC2100
   IMAGE_SIZE := 120320k
-  DEVICE_PACKAGES += kmod-mt7603 kmod-mt7615-firmware
+  DEVICE_PACKAGES += kmod-mt7603e kmod-mt7615d -wpad-openssl
 endef
 TARGET_DEVICES += xiaomi_redmi-router-ac2100
 
