@@ -159,10 +159,10 @@ static VOID free_fw_target(struct _RTMP_ADAPTER *pAd,
 
 static VOID show_patch_info_cpu(struct patch_info *patch_info)
 {
-	FWDL_PRINT_CHAR(patch_info->built_date, 16, " Built date: ");
-	FWDL_PRINT_CHAR(patch_info->platform, 4, " Platform: ");
-	FWDL_PRINT_HEX(patch_info->hw_sw_version, 4, " HW/SW version: ");
-	FWDL_PRINT_HEX(patch_info->patch_version, 4, " Patch version: ");
+	FWDL_PRINT_CHAR(patch_info->built_date, 16, ("\tBuilt date: "));
+	FWDL_PRINT_CHAR(patch_info->platform, 4, ("\tPlatform: "));
+	FWDL_PRINT_HEX(patch_info->hw_sw_version, 4, ("\tHW/SW version: "));
+	FWDL_PRINT_HEX(patch_info->patch_version, 4, ("\tPatch version: "));
 }
 
 VOID show_patch_info(struct _RTMP_ADAPTER *pAd)
@@ -188,13 +188,14 @@ VOID show_patch_info(struct _RTMP_ADAPTER *pAd)
 
 static VOID show_fw_info_cpu(struct fw_info *fw_info)
 {
-	FWDL_PRINT_HEX(&fw_info->chip_id, 1, " Chip ID: ");
-	FWDL_PRINT_HEX(&fw_info->eco_ver, 1, " Eco version: ");
-	FWDL_PRINT_HEX(&fw_info->num_of_region, 1, " Region number: ");
-	FWDL_PRINT_HEX(&fw_info->format_ver, 1, " Format version: ");
-	FWDL_PRINT_CHAR(fw_info->ram_ver, 10, " Ram version: ");
-	FWDL_PRINT_CHAR(fw_info->ram_built_date, 15, " Built date: ");
-	printk(KERN_CONT " Common crc: 0x%x", fw_info->crc);
+	FWDL_PRINT_HEX(&fw_info->chip_id, 1, ("\tChip ID: "));
+	FWDL_PRINT_HEX(&fw_info->eco_ver, 1, ("\tEco version: "));
+	FWDL_PRINT_HEX(&fw_info->num_of_region, 1, ("\tRegion number: "));
+	FWDL_PRINT_HEX(&fw_info->format_ver, 1, ("\tFormat version: "));
+	FWDL_PRINT_CHAR(fw_info->ram_ver, 10, ("\tRam version: "));
+	FWDL_PRINT_CHAR(fw_info->ram_built_date, 15, ("\tBuilt date: "));
+	MTWF_LOG(DBG_CAT_FW, DBG_SUBCAT_ALL, DBG_LVL_OFF,
+		 ("\tCommon crc: 0x%x\n", fw_info->crc));
 }
 
 VOID show_fw_info(struct _RTMP_ADAPTER *pAd)
@@ -511,7 +512,7 @@ static NDIS_STATUS parse_fw_v2(struct _RTMP_ADAPTER *pAd, enum target_cpu cpu,
 		img_ptr += 1; /* bypass chip id field */
 
 		img_get_8bit(&dl_feature_set, &img_ptr, 1);
-		FWDL_PRINT_HEX(&dl_feature_set, 1, "\tFeature set: ");
+		FWDL_PRINT_HEX(&dl_feature_set, 1, ("\tFeature set: "));
 
 		img_ptr += 26; /* jump to size field */
 
@@ -621,7 +622,7 @@ static NDIS_STATUS parse_fw_v3(struct _RTMP_ADAPTER *pAd, enum target_cpu cpu,
 			 ("\tDownload size: %d\n", dl_len));
 
 		img_get_8bit(&dl_feature_set, &img_ptr, 1);
-		FWDL_PRINT_HEX(&dl_feature_set, 1, "\tFeature set: ");
+		FWDL_PRINT_HEX(&dl_feature_set, 1, ("\tFeature set: "));
 
 		region = &target->fw_region[i];
 		region->img_dest_addr = dl_addr;

@@ -28,18 +28,22 @@
 #define FWDL_PRINT_CHAR(src, cnt, info)                                        \
 	do {                                                                   \
 		UINT32 loop;                                                   \
-		printk(KERN_CONT info);       \
+		MTWF_LOG(DBG_CAT_FW, DBG_SUBCAT_ALL, DBG_LVL_OFF, info);       \
 		for (loop = 0; loop < cnt; loop++)                             \
-			printk(KERN_CONT "%c", *(src + loop));                       \
+			MTWF_LOG(DBG_CAT_FW, DBG_SUBCAT_ALL, DBG_LVL_OFF,      \
+				 ("%c", *(src + loop)));                       \
+		MTWF_LOG(DBG_CAT_FW, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("\n"));     \
 	} while (0)
 
 #define FWDL_PRINT_HEX(src, cnt, info)                                         \
 	do {                                                                   \
 		UINT32 loop;                                                   \
-		printk(KERN_CONT info);       \
-		printk(KERN_CONT "0x");     \
+		MTWF_LOG(DBG_CAT_FW, DBG_SUBCAT_ALL, DBG_LVL_OFF, info);       \
+		MTWF_LOG(DBG_CAT_FW, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("0x"));     \
 		for (loop = 0; loop < cnt; loop++)                             \
-			printk(KERN_CONT "%02x", *(src + loop));                     \
+			MTWF_LOG(DBG_CAT_FW, DBG_SUBCAT_ALL, DBG_LVL_OFF,      \
+				 ("%02x", *(src + loop)));                     \
+		MTWF_LOG(DBG_CAT_FW, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("\n"));     \
 	} while (0)
 
 enum fwdl_stage {
