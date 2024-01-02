@@ -6324,15 +6324,15 @@ VOID PeerPairMsg4Action(IN PRTMP_ADAPTER pAd, IN MAC_TABLE_ENTRY *pEntry,
 			INT32 i;
 
 			MTWF_LOG(DBG_CAT_CFG, DBG_SUBCAT_ALL, DBG_LVL_OFF,
-				 ("PTK:"));
+				 (KERN_CONT "PTK:"));
 
 			for (i = 0; i < 64; i++)
 				MTWF_LOG(DBG_CAT_CFG, DBG_SUBCAT_ALL,
 					 DBG_LVL_OFF,
-					 ("%02x", pSecConfig->PTK[i]));
+					 (KERN_CONT "%02x", pSecConfig->PTK[i]));
 
 			MTWF_LOG(DBG_CAT_CFG, DBG_SUBCAT_ALL, DBG_LVL_OFF,
-				 ("\n"));
+				 (KERN_CONT "\n"));
 		}
 	} else {
 		/* 5. init Group 2-way handshake if necessary.*/
