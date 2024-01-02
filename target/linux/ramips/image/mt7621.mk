@@ -1672,6 +1672,7 @@ endef
 TARGET_DEVICES += meig_slt866
 
 define Device/mercury_mac2600r
+  $(Device/dsa-migration)
   $(Device/uimage-lzma-loader)
   IMAGE_SIZE := 7808k
   DEVICE_MODEL := MAC2600R
