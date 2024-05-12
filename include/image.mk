@@ -185,6 +185,7 @@ define Image/BuildDTB/sub
 		-I$(DTS_DIR) \
 		-I$(DTS_DIR)/include \
 		-I$(LINUX_DIR)/include/ \
+		-I$(LINUX_DIR)/scripts/dtc/include-prefixes \
 		-undef -D__DTS__ $(3) \
 		-o $(2).tmp $(1)
 	$(LINUX_DIR)/scripts/dtc/dtc -O dtb \
@@ -279,12 +280,11 @@ endef
 define Image/Manifest
 	$(call opkg,$(TARGET_DIR_ORIG)) list-installed > \
 		$(BIN_DIR)/$(IMG_PREFIX)$(if $(PROFILE_SANITIZED),-$(PROFILE_SANITIZED)).manifest
-ifndef IB
-	$(if $(CONFIG_JSON_CYCLONEDX_SBOM), \
-		$(SCRIPT_DIR)/package-metadata.pl imgcyclonedxsbom \
-		$(TMP_DIR)/.packageinfo \
+ifneq ($(CONFIG_JSON_CYCLONEDX_SBOM),)
+	$(SCRIPT_DIR)/package-metadata.pl imgcyclonedxsbom \
+		$(if $(IB),$(TOPDIR)/.packageinfo, $(TMP_DIR)/.packageinfo) \
 		$(BIN_DIR)/$(IMG_PREFIX)$(if $(PROFILE_SANITIZED),-$(PROFILE_SANITIZED)).manifest > \
-		$(BIN_DIR)/$(IMG_PREFIX)$(if $(PROFILE_SANITIZED),-$(PROFILE_SANITIZED)).bom.cdx.json)
+		$(BIN_DIR)/$(IMG_PREFIX)$(if $(PROFILE_SANITIZED),-$(PROFILE_SANITIZED)).bom.cdx.json
 endif
 endef
 
