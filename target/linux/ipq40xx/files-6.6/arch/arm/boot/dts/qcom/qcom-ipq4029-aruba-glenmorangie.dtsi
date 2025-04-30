@@ -6,6 +6,11 @@
 #include <dt-bindings/soc/qcom,tcsr.h>
 
 / {
+	aliases {
+		// TODO: Verify if the ethernet0 alias is needed
+		ethernet0 = &gmac;
+	};
+
 	memory {
 		device_type = "memory";
 		reg = <0x80000000 0x10000000>;
@@ -230,6 +235,10 @@
 	label = "lan";
 	phy-handle = <&ethphy>;
 	phy-mode = "rgmii-id";
+};
+
+&qca807x {
+	status = "disabled";
 };
 
 &ethphy0 {

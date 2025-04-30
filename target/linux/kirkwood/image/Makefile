@@ -112,9 +112,7 @@ endef
 
 define Device/Default
   PROFILES := Default
-ifdef CONFIG_LINUX_6_6
   DEVICE_DTS_DIR := $(DTS_DIR)/marvell
-endif
   DEVICE_DTS = kirkwood-$(lastword $(subst _, ,$(1)))
   KERNEL_DEPENDS = $$(wildcard $(DTS_DIR)/$$(DEVICE_DTS).dts)
   KERNEL := kernel-bin | append-dtb | uImage none
@@ -134,7 +132,8 @@ define Device/checkpoint_l-50
   DEVICE_VENDOR := Check Point
   DEVICE_MODEL := L-50
   DEVICE_PACKAGES := kmod-ath9k kmod-gpio-button-hotplug kmod-mvsdio \
-	kmod-rtc-s35390a kmod-usb-ledtrig-usbport wpad-basic-mbedtls
+	kmod-rtc-s35390a kmod-usb-ledtrig-usbport wpad-basic-mbedtls \
+	kmod-dsa-mv88e6xxx
   IMAGES := sysupgrade.bin
 endef
 TARGET_DEVICES += checkpoint_l-50
@@ -182,12 +181,21 @@ define Device/ctera_c200-v1
 endef
 TARGET_DEVICES += ctera_c200-v1
 
+define Device/dlink_dns320l
+  DEVICE_VENDOR := D-Link
+  DEVICE_MODEL := DNS-320L
+  DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-fs-ext4 kmod-gpio-button-hotplug \
+	kmod-usb-storage kmod-usb-ledtrig-usbport dns320l-mcu kmod-rtc-mv
+endef
+TARGET_DEVICES += dlink_dns320l
+
 define Device/endian_4i-edge-200
   DEVICE_VENDOR := Endian
   DEVICE_MODEL := 4i Edge 200
   DEVICE_ALT0_VENDOR := Endian
   DEVICE_ALT0_MODEL := UTM Mini Firewall
-  DEVICE_PACKAGES := kmod-ath9k kmod-mvsdio wpad-basic-mbedtls kmod-rtc-mv
+  DEVICE_PACKAGES := kmod-ath9k kmod-mvsdio wpad-basic-mbedtls kmod-rtc-mv \
+	kmod-dsa-mv88e6xxx
   KERNEL_SIZE := 4096k
   IMAGES := sysupgrade.bin
 endef
@@ -267,7 +275,7 @@ define Device/linksys
   $(Device/kernel-size-migration-linksys)
   DEVICE_VENDOR := Linksys
   DEVICE_PACKAGES := kmod-mwl8k wpad-basic-mbedtls kmod-gpio-button-hotplug \
-	kmod-rtc-mv
+	kmod-rtc-mv kmod-dsa-mv88e6xxx
   KERNEL_IN_UBI :=
   KERNEL_SIZE := 4096k
   UBINIZE_OPTS := -E 5
@@ -367,7 +375,7 @@ endef
 TARGET_DEVICES += seagate_goflexhome
 
 define Device/zyxel_nsa310b
-  DEVICE_VENDOR := ZyXEL
+  DEVICE_VENDOR := Zyxel
   DEVICE_MODEL := NSA310b
   DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-r8169 kmod-fs-ext4 \
 	kmod-gpio-button-hotplug kmod-hwmon-lm85 kmod-rtc-mv
@@ -376,14 +384,15 @@ endef
 TARGET_DEVICES += zyxel_nsa310b
 
 define Device/zyxel_nsa310s
-  DEVICE_VENDOR := ZyXEL
+  DEVICE_VENDOR := Zyxel
   DEVICE_MODEL := NSA310S
-  DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-fs-ext4 kmod-gpio-button-hotplug
+  DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-fs-ext4 \
+	kmod-gpio-button-hotplug kmod-rtc-mv
 endef
 TARGET_DEVICES += zyxel_nsa310s
 
 define Device/zyxel_nsa325
-  DEVICE_VENDOR := ZyXEL
+  DEVICE_VENDOR := Zyxel
   DEVICE_MODEL := NSA325
   DEVICE_VARIANT := v1/v2
   DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-fs-ext4 \

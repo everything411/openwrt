@@ -8,18 +8,18 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=e2fsprogs
-PKG_VERSION:=1.47.0
-PKG_RELEASE:=2
+PKG_VERSION:=1.47.2
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/linux/kernel/people/tytso/e2fsprogs/v$(PKG_VERSION)/
-PKG_HASH:=144af53f2bbd921cef6f8bea88bb9faddca865da3fbc657cc9b4d2001097d5db
+PKG_HASH:=08242e64ca0e8194d9c1caad49762b19209a06318199b63ce74ae4ef2d74e63c
 
 PKG_LICENSE:=GPL-2.0
 PKG_LICENSE_FILES:=NOTICE
 PKG_CPE_ID:=cpe:/a:e2fsprogs_project:e2fsprogs
 
-PKG_BUILD_DEPENDS:=util-linux e2fsprogs/host
+PKG_BUILD_DEPENDS:=util-linux
 PKG_INSTALL:=1
 
 PKG_BUILD_PARALLEL:=1
@@ -225,23 +225,6 @@ define Build/InstallDev
 	$(CP) $(PKG_BUILD_DIR)/lib/e2p/e2p.h $(1)/usr/include/e2p
 endef
 
-define Host/Compile
-	$(MAKE) $(PKG_JOBS) -C $(HOST_BUILD_DIR)/lib/ss mk_cmds
-	$(MAKE) $(PKG_JOBS) -C $(HOST_BUILD_DIR)/lib/et compile_et
-endef
-
-define Host/Install
-	$(INSTALL_DIR) $(1)/share/et
-	$(CP) $(HOST_BUILD_DIR)/lib/et/et_[ch].awk $(1)/share/et/
-	$(INSTALL_DIR) $(1)/share/ss
-	$(CP) $(HOST_BUILD_DIR)/lib/ss/ct_c.{sed,awk} $(1)/share/ss/
-	$(INSTALL_DIR) $(1)/bin
-	$(CP) \
-		$(HOST_BUILD_DIR)/lib/et/compile_et \
-		$(HOST_BUILD_DIR)/lib/ss/mk_cmds \
-		$(1)/bin/
-endef
-
 define Package/e2fsprogs/conffiles
 /etc/e2fsck.conf
 endef
@@ -354,4 +337,3 @@ $(eval $(call BuildPackage,filefrag))
 $(eval $(call BuildPackage,debugfs))
 $(eval $(call BuildPackage,chattr))
 $(eval $(call BuildPackage,lsattr))
-$(eval $(call HostBuild))

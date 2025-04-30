@@ -150,7 +150,9 @@ I2C_I801_MODULES:= \
 define KernelPackage/i2c-i801
   $(call i2c_defaults,$(I2C_I801_MODULES),59)
   TITLE:=Intel I801 and compatible I2C interfaces
-  DEPENDS:=@PCI_SUPPORT @TARGET_x86 +kmod-i2c-core +kmod-i2c-smbus
+  DEPENDS:= \
+    @PCI_SUPPORT @TARGET_x86 +kmod-i2c-core +kmod-i2c-smbus \
+    (!LINUX_6_6&&PACKAGE_kmod-i2c-mux-gpio):kmod-i2c-mux-gpio
 endef
 
 define KernelPackage/i2c-i801/description
@@ -167,6 +169,24 @@ define KernelPackage/i2c-i801/description
 endef
 
 $(eval $(call KernelPackage,i2c-i801))
+
+
+I2C_MLXCPLD_MODULES:= \
+  CONFIG_I2C_MLXCPLD:drivers/i2c/busses/i2c-mlxcpld
+
+define KernelPackage/i2c-mlxcpld
+  $(call i2c_defaults,$(I2C_MLXCPLD_MODULES),59)
+  TITLE:=Mellanox I2C driver
+  DEPENDS:=@TARGET_x86_64 +kmod-regmap-core
+endef
+
+define KernelPackage/i2c-mlxcpld/description
+ This exposes the Mellanox platform I2C busses
+ to the linux I2C layer for X86 based systems.
+ Controller is implemented as CPLD logic.
+endef
+
+$(eval $(call KernelPackage,i2c-mlxcpld))
 
 
 I2C_MUX_MODULES:= \
@@ -198,6 +218,24 @@ define KernelPackage/i2c-mux-gpio/description
 endef
 
 $(eval $(call KernelPackage,i2c-mux-gpio))
+
+
+I2C_MUX_MLXCPLD_MODULES:= \
+  CONFIG_I2C_MUX_MLXCPLD:drivers/i2c/muxes/i2c-mux-mlxcpld
+
+define KernelPackage/i2c-mux-mlxcpld
+  $(call i2c_defaults,$(I2C_MUX_MLXCPLD_MODULES),51)
+  TITLE:=Mellanox CPLD based I2C multiplexer
+  DEPENDS:=+kmod-i2c-mlxcpld +kmod-i2c-mux
+endef
+
+define KernelPackage/i2c-mux-mlxcpld/description
+ This driver provides access to
+ I2C busses connected through a MUX, which is controlled
+ by a CPLD register.
+endef
+
+$(eval $(call KernelPackage,i2c-mux-mlxcpld))
 
 
 I2C_MUX_REG_MODULES:= \
@@ -253,7 +291,7 @@ I2C_PIIX4_MODULES:= \
 define KernelPackage/i2c-piix4
   $(call i2c_defaults,$(I2C_PIIX4_MODULES),59)
   TITLE:=Intel PIIX4 and compatible I2C interfaces
-  DEPENDS:=@PCI_SUPPORT @TARGET_x86 +kmod-i2c-core
+  DEPENDS:=@PCI_SUPPORT @TARGET_x86 +kmod-i2c-core +!LINUX_6_6:kmod-i2c-smbus
 endef
 
 define KernelPackage/i2c-piix4/description

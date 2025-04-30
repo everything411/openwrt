@@ -3,9 +3,7 @@
 # Copyright (C) 2012-2016 OpenWrt.org
 # Copyright (C) 2016 LEDE-project.org
 
-ifneq ($(KERNEL),6.1)
 DTS_DIR := $(DTS_DIR)/marvell
-endif
 
 define Build/fortigate-header
   ( \
@@ -108,7 +106,9 @@ define Device/cznic_turris-omnia
   DEVICE_PACKAGES :=  \
     mkf2fs e2fsprogs kmod-fs-vfat kmod-nls-cp437 kmod-nls-iso8859-1 \
     wpad-basic-mbedtls kmod-ath9k kmod-ath10k-ct ath10k-firmware-qca988x-ct \
-    kmod-mt7915-firmware partx-utils kmod-i2c-mux-pca954x kmod-leds-turris-omnia
+    kmod-mt7915-firmware partx-utils kmod-i2c-mux-pca954x kmod-leds-turris-omnia \
+    kmod-turris-omnia-mcu kmod-gpio-button-hotplug omnia-eeprom omnia-mcu-firmware \
+    omnia-mcutool kmod-dsa-mv88e6xxx
   IMAGES := sysupgrade.img.gz
   IMAGE/sysupgrade.img.gz := boot-scr | boot-img | sdcard-img | gzip | append-metadata
   SUPPORTED_DEVICES += armada-385-turris-omnia
@@ -116,35 +116,72 @@ define Device/cznic_turris-omnia
 endef
 TARGET_DEVICES += cznic_turris-omnia
 
-define Device/fortinet_fg-30e
+define Device/fortinet
   DEVICE_VENDOR := Fortinet
-  DEVICE_MODEL := FortiGate 30E
   SOC := armada-385
   KERNEL := kernel-bin | append-dtb
-  KERNEL_INITRAMFS := kernel-bin | append-dtb | fortigate-header | \
-    gzip-filename FGT30E
   KERNEL_SIZE := 6144k
-  DEVICE_DTS := armada-385-fortinet-fg-30e
   IMAGE/sysupgrade.bin := append-rootfs | pad-rootfs | \
     sysupgrade-tar rootfs=$$$$@ | append-metadata
-  DEVICE_PACKAGES := kmod-hwmon-nct7802
+  DEVICE_PACKAGES := kmod-hwmon-nct7802 kmod-dsa-mv88e6xxx
+endef
+
+define Device/fortinet_fg-30e
+  $(Device/fortinet)
+  DEVICE_MODEL := FortiGate 30E
+  DEVICE_DTS := armada-385-fortinet-fg-30e
+  KERNEL_INITRAMFS := kernel-bin | append-dtb | fortigate-header | \
+    gzip-filename FGT30E
 endef
 TARGET_DEVICES += fortinet_fg-30e
 
 define Device/fortinet_fg-50e
-  DEVICE_VENDOR := Fortinet
+  $(Device/fortinet)
   DEVICE_MODEL := FortiGate 50E
-  SOC := armada-385
-  KERNEL := kernel-bin | append-dtb
+  DEVICE_DTS := armada-385-fortinet-fg-50e
   KERNEL_INITRAMFS := kernel-bin | append-dtb | fortigate-header | \
     gzip-filename FGT50E
-  KERNEL_SIZE := 6144k
-  DEVICE_DTS := armada-385-fortinet-fg-50e
-  IMAGE/sysupgrade.bin := append-rootfs | pad-rootfs | \
-    sysupgrade-tar rootfs=$$$$@ | append-metadata
-  DEVICE_PACKAGES := kmod-hwmon-nct7802
 endef
 TARGET_DEVICES += fortinet_fg-50e
+
+define Device/fortinet_fg-51e
+  $(Device/fortinet)
+  DEVICE_MODEL := FortiGate 51E
+  DEVICE_DTS := armada-385-fortinet-fg-51e
+  KERNEL_INITRAMFS := kernel-bin | append-dtb | fortigate-header | \
+    gzip-filename FGT51E
+endef
+TARGET_DEVICES += fortinet_fg-51e
+
+define Device/fortinet_fg-52e
+  $(Device/fortinet)
+  DEVICE_MODEL := FortiGate 52E
+  DEVICE_DTS := armada-385-fortinet-fg-52e
+  KERNEL_INITRAMFS := kernel-bin | append-dtb | fortigate-header | \
+    gzip-filename FGT52E
+endef
+TARGET_DEVICES += fortinet_fg-52e
+
+define Device/fortinet_fwf-50e-2r
+  $(Device/fortinet)
+  DEVICE_MODEL := FortiWiFi 50E-2R
+  DEVICE_DTS := armada-385-fortinet-fwf-50e-2r
+  KERNEL_INITRAMFS := kernel-bin | append-dtb | fortigate-header | \
+    gzip-filename FW502R
+  DEVICE_PACKAGES += kmod-ath10k-ct ath10k-firmware-qca988x-ct \
+    wpad-basic-mbedtls
+endef
+TARGET_DEVICES += fortinet_fwf-50e-2r
+
+define Device/fortinet_fwf-51e
+  $(Device/fortinet)
+  DEVICE_MODEL := FortiWiFi 51E
+  DEVICE_DTS := armada-385-fortinet-fwf-51e
+  KERNEL_INITRAMFS := kernel-bin | append-dtb | fortigate-header | \
+    gzip-filename FWF51E
+  DEVICE_PACKAGES += kmod-ath9k wpad-basic-mbedtls
+endef
+TARGET_DEVICES += fortinet_fwf-51e
 
 define Device/globalscale_mirabox
   $(Device/NAND-512K)
@@ -165,7 +202,7 @@ define Device/iij_sa-w2
   IMAGE/sysupgrade.bin := append-kernel | pad-to 64k | \
     append-rootfs | pad-rootfs | check-size | append-metadata
   DEVICE_PACKAGES := kmod-ath9k kmod-ath10k-ct ath10k-firmware-qca988x-ct \
-    wpad-basic-mbedtls
+    wpad-basic-mbedtls kmod-dsa-mv88e6xxx
 endef
 TARGET_DEVICES += iij_sa-w2
 
@@ -214,7 +251,7 @@ define Device/linksys_wrt1200ac
   DEVICE_ALT0_VENDOR := Linksys
   DEVICE_ALT0_MODEL := Caiman
   DEVICE_DTS := armada-385-linksys-caiman
-  DEVICE_PACKAGES += mwlwifi-firmware-88w8864
+  DEVICE_PACKAGES += mwlwifi-firmware-88w8864 kmod-dsa-mv88e6xxx
   SUPPORTED_DEVICES += armada-385-linksys-caiman linksys,caiman
 endef
 TARGET_DEVICES += linksys_wrt1200ac
@@ -230,7 +267,7 @@ define Device/linksys_wrt1900acs
   DEVICE_ALT1_VENDOR := Linksys
   DEVICE_ALT1_MODEL := Shelby
   DEVICE_DTS := armada-385-linksys-shelby
-  DEVICE_PACKAGES += mwlwifi-firmware-88w8864
+  DEVICE_PACKAGES += mwlwifi-firmware-88w8864 kmod-dsa-mv88e6xxx
   SUPPORTED_DEVICES += armada-385-linksys-shelby linksys,shelby
 endef
 TARGET_DEVICES += linksys_wrt1900acs
@@ -243,7 +280,7 @@ define Device/linksys_wrt1900ac-v1
   DEVICE_ALT0_VENDOR := Linksys
   DEVICE_ALT0_MODEL := Mamba
   DEVICE_DTS := armada-xp-linksys-mamba
-  DEVICE_PACKAGES += mwlwifi-firmware-88w8864
+  DEVICE_PACKAGES += mwlwifi-firmware-88w8864 kmod-dsa-mv88e6xxx
   KERNEL_SIZE := 4096k
   SUPPORTED_DEVICES += armada-xp-linksys-mamba linksys,mamba
 endef
@@ -257,7 +294,7 @@ define Device/linksys_wrt1900ac-v2
   DEVICE_ALT0_VENDOR := Linksys
   DEVICE_ALT0_MODEL := Cobra
   DEVICE_DTS := armada-385-linksys-cobra
-  DEVICE_PACKAGES += mwlwifi-firmware-88w8864
+  DEVICE_PACKAGES += mwlwifi-firmware-88w8864 kmod-dsa-mv88e6xxx
   SUPPORTED_DEVICES += armada-385-linksys-cobra linksys,cobra
 endef
 TARGET_DEVICES += linksys_wrt1900ac-v2
@@ -269,7 +306,8 @@ define Device/linksys_wrt3200acm
   DEVICE_ALT0_VENDOR := Linksys
   DEVICE_ALT0_MODEL := Rango
   DEVICE_DTS := armada-385-linksys-rango
-  DEVICE_PACKAGES += kmod-btmrvl kmod-mwifiex-sdio mwlwifi-firmware-88w8964
+  DEVICE_PACKAGES += kmod-btmrvl kmod-mwifiex-sdio mwlwifi-firmware-88w8964 \
+	kmod-dsa-mv88e6xxx
   SUPPORTED_DEVICES += armada-385-linksys-rango linksys,rango
 endef
 TARGET_DEVICES += linksys_wrt3200acm
@@ -281,7 +319,8 @@ define Device/linksys_wrt32x
   DEVICE_ALT0_VENDOR := Linksys
   DEVICE_ALT0_MODEL := Venom
   DEVICE_DTS := armada-385-linksys-venom
-  DEVICE_PACKAGES += kmod-btmrvl kmod-mwifiex-sdio mwlwifi-firmware-88w8964
+  DEVICE_PACKAGES += kmod-btmrvl kmod-mwifiex-sdio mwlwifi-firmware-88w8964 \
+	kmod-dsa-mv88e6xxx
   KERNEL_SIZE := 6144k
   KERNEL := kernel-bin | append-dtb
   SUPPORTED_DEVICES += armada-385-linksys-venom linksys,venom
@@ -302,6 +341,7 @@ define Device/marvell_a370-rd
   DEVICE_VENDOR := Marvell
   DEVICE_MODEL := Armada 370 RD (RD-88F6710-A1)
   DEVICE_DTS := armada-370-rd
+  DEVICE_PACKAGES += kmod-dsa-mv88e6xxx
   SUPPORTED_DEVICES += armada-370-rd
 endef
 TARGET_DEVICES += marvell_a370-rd
@@ -408,6 +448,23 @@ define Device/synology_ds213j
   DEVICE_PACKAGES := \
     kmod-rtc-s35390a kmod-hwmon-gpiofan kmod-hwmon-drivetemp \
     kmod-md-raid0 kmod-md-raid1 kmod-md-mod e2fsprogs mdadm \
-    -ppp -kmod-nft-offload -firewall4 -dnsmasq -odhcpd-ipv6only
+    -ppp -kmod-nft-offload -dnsmasq -odhcpd-ipv6only
 endef
 TARGET_DEVICES += synology_ds213j
+
+define Device/wd_cloud-mirror-gen2
+  $(Device/NAND-128K)
+  DEVICE_VENDOR := Western Digital
+  DEVICE_MODEL := MyCloud Mirror Gen 2 (BWVZ/Grand Teton)
+  DEVICE_PACKAGES += -uboot-envtools mkf2fs e2fsprogs \
+	partx-utils kmod-hwmon-drivetemp -ppp -kmod-nft-offload -dnsmasq \
+	-odhcpd-ipv6only 
+  DEVICE_DTS := armada-385-wd_cloud-mirror-gen2
+  KERNEL_SIZE := 5120k
+  KERNEL := kernel-bin | append-dtb | uImage none
+  KERNEL_INITRAMFS := kernel-bin | append-dtb | uImage none
+  IMAGES += image-cfs-factory.bin uImage-factory.bin
+  IMAGE/image-cfs-factory.bin := append-ubi
+  IMAGE/uImage-factory.bin := append-kernel
+endef
+TARGET_DEVICES += wd_cloud-mirror-gen2

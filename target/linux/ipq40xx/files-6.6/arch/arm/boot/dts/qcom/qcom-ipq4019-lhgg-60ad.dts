@@ -35,6 +35,8 @@
 	};
 
 	aliases {
+		// TODO: Verify if the ethernet0 alias is needed
+		ethernet0 = &gmac;
 		led-boot = &user;
 		led-failsafe = &user;
 		led-running = &user;
@@ -243,6 +245,18 @@
 
 &mdio {
 	status = "okay";
+
+	ar8035: ethernet-phy@0 {
+		reg = <0>;
+	};
+};
+
+&qca807x {
+	status = "disabled";
+};
+
+&ethphy0 {
+	status = "disabled";
 };
 
 &ethphy1 {
@@ -279,6 +293,6 @@
 	status = "okay";
 
 	label = "lan";
-	phy-handle = <&ethphy0>;
+	phy-handle = <&ar8035>;
 	phy-mode = "rgmii-id";
 };

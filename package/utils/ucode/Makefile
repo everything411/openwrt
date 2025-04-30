@@ -12,29 +12,33 @@ PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL=https://github.com/jow-/ucode.git
-PKG_SOURCE_DATE:=2024-05-09
-PKG_SOURCE_VERSION:=0d823e702bfe5f2bb5be694030a98afedf34aa6b
-PKG_MIRROR_HASH:=c52d499d2490e958e36ed80c32e8fd6d94cacf3b43b9d14c45c68a25bc44d536
+PKG_SOURCE_DATE:=2025-03-24
+PKG_SOURCE_VERSION:=b27d70c977ab4381f4094a0b1208e2a13fc5123f
+PKG_MIRROR_HASH:=30a19d71a55ac320c92879beaed18a2f8da7b3b523eb7effa34ad3c4f9e1e50d
 PKG_MAINTAINER:=Jo-Philipp Wich <jo@mein.io>
 PKG_LICENSE:=ISC
 
 PKG_ABI_VERSION:=20230711
+PKG_BUILD_DEPENDS:=libmd
 HOST_BUILD_DEPENDS:=libjson-c/host
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/cmake.mk
 
-CMAKE_OPTIONS += -DSOVERSION=$(PKG_ABI_VERSION)
+CMAKE_OPTIONS += \
+	-DSOVERSION=$(PKG_ABI_VERSION)
+
+CMAKE_HOST_OPTIONS += \
+	-DCMAKE_SKIP_RPATH=FALSE \
+	-DCMAKE_INSTALL_RPATH="${STAGING_DIR_HOSTPKG}/lib"
 
 ifeq ($(HOST_OS),Darwin)
   CMAKE_HOST_OPTIONS += \
-	-DCMAKE_SKIP_RPATH=FALSE \
-	-DCMAKE_MACOSX_RPATH=1 \
-	-DCMAKE_INSTALL_RPATH="${STAGING_DIR_HOSTPKG}/lib"
+	-DCMAKE_MACOSX_RPATH=1
 else
   CMAKE_HOST_OPTIONS += \
-	-DSOVERSION=$(PKG_ABI_VERSION)
+	-DUSE_RPATH="${STAGING_DIR_HOSTPKG}/lib"
 endif
 
 CMAKE_HOST_OPTIONS += \
@@ -48,7 +52,8 @@ CMAKE_HOST_OPTIONS += \
 	-DUCI_SUPPORT=OFF \
 	-DULOOP_SUPPORT=OFF \
 	-DDEBUG_SUPPORT=ON \
-	-DLOG_SUPPORT=OFF
+	-DLOG_SUPPORT=OFF \
+	-DDIGEST_SUPPORT=OFF
 
 
 define Package/ucode/default
@@ -174,6 +179,10 @@ $(eval $(call UcodeModule, \
 $(eval $(call UcodeModule, \
 	uloop, ULOOP_SUPPORT, +libubox, \
 	The uloop module allows ucode scripts to interact with OpenWrt uloop event loop implementation.))
+
+$(eval $(call UcodeModule, \
+	digest, DIGEST_SUPPORT, , \
+	The digest module allows ucode scripts to use libmd digests.))
 
 $(eval $(call BuildPackage,libucode))
 $(eval $(call BuildPackage,ucode))

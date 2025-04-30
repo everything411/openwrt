@@ -7,7 +7,7 @@
 
 / {
 	compatible = "zyxel,lte3301-plus", "mediatek,mt7621-soc";
-	model = "ZyXEL LTE3301-Plus";
+	model = "Zyxel LTE3301-Plus";
 
 	aliases {
 		label-mac-device = &gmac0;
@@ -15,11 +15,6 @@
 		led-failsafe = &led_power;
 		led-running = &led_power;
 		led-upgrade = &led_power;
-	};
-
-
-	chosen {
-		bootargs = "console=ttyS0,57600";
 	};
 
 	gpio_export {
@@ -96,17 +91,19 @@
 
 	};
 
+	reg_power_usb: regulator {
+		compatible = "regulator-fixed";
+		regulator-name = "power_usb";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		gpios = <&gpio 7 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		regulator-boot-on;
+	};
 };
 
-&gpio {
-	status = "okay";
-
-	enable_usb_power {
-		gpio-hog;
-		line-name = "enable USB power";
-		gpios = <7 GPIO_ACTIVE_HIGH>;
-		output-high;
-	};
+&xhci {
+	vbus-supply = <&reg_power_usb>;
 };
 
 &nand {

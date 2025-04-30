@@ -9,7 +9,6 @@
 	model = "YunCore AX835";
 
 	aliases {
-		ethernet0 = &gmac0;
 		led-boot = &led_system;
 		led-failsafe = &led_system;
 		led-running = &led_system;
@@ -36,8 +35,9 @@
 		regulator-name = "led_vbus";
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
+		enable-active-high;
 		regulator-always-on;
-		gpio = <&pio 5 GPIO_ACTIVE_HIGH>;
+		gpios = <&pio 5 GPIO_ACTIVE_HIGH>;
 	};
 
 	leds {

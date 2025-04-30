@@ -43,6 +43,7 @@
 	cpus {
 		#address-cells = <1>;
 		#size-cells = <0>;
+		brcm,bmips-cbr-reg = <0xff400000>;
 		mips-hpt-frequency = <200000000>;
 
 		cpu@0 {
@@ -333,7 +334,7 @@
 
 				pinctrl_uart1: uart1-pins {
 					function = "uart1";
-					group = "uart1_grp";
+					pins = "uart1_grp";
 				};
 			};
 		};

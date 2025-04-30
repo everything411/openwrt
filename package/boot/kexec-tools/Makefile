@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=kexec-tools
 PKG_VERSION:=2.0.28
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/linux/utils/kernel/kexec
@@ -24,7 +24,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/kexec-tools/Default
   SECTION:=utils
   CATEGORY:=Utilities
-  URL:=http://kernel.org/pub/linux/kernel/people/horms/kexec-tools/
+  URL:=https://github.com/horms/kexec-tools
 endef
 
 define Package/kexec-tools

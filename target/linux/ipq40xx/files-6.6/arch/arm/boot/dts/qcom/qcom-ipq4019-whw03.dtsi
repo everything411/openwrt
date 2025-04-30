@@ -8,10 +8,12 @@
 
 / {
 	aliases {
+		ethernet0 = &gmac;
 		led-boot = &led_blue;
 		led-failsafe = &led_red;
 		led-running = &led_blue;
 		led-upgrade = &led_red;
+		label-mac-device = &gmac;
 	};
 
 	soc {
@@ -249,10 +251,6 @@
 	};
 };
 
-&qpic_bam {
-	status = "okay";
-};
-
 &gmac {
 	status = "okay";
 };
@@ -276,7 +274,7 @@
 	pinctrl-0 = <&wifi_0_pins>;
 	pinctrl-names = "default";
 
-	qcom,coexist-support = <1>;
+	qcom,coexist-support = /bits/ 8 <1>;
 	qcom,coexist-gpio-pin = <52>;
 };
 

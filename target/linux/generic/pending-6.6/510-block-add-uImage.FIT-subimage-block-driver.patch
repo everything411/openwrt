@@ -36,7 +36,7 @@ Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -22006,6 +22006,12 @@ F:	Documentation/filesystems/ubifs-authe
+@@ -22016,6 +22016,12 @@ F:	Documentation/filesystems/ubifs-authe
  F:	Documentation/filesystems/ubifs.rst
  F:	fs/ubifs/
  
@@ -81,7 +81,7 @@ Signed-off-by: Daniel Golle <daniel@makrotopia.org>
  swim_mod-y	:= swim.o swim_asm.o
 --- /dev/null
 +++ b/drivers/block/fitblk.c
-@@ -0,0 +1,659 @@
+@@ -0,0 +1,658 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
 + * uImage.FIT virtual block device driver.
@@ -656,7 +656,7 @@ Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 +		add_fit_subimage_device(bdev, slot++, start_sect, nr_sects, true);
 +	}
 +
-+	if (!found || !slot)
++	if (!slot)
 +		goto out_bootconf;
 +
 +	dev_info(dev, "mapped %u uImage.FIT filesystem sub-image%s as /dev/fit%s%u%s\n",
@@ -668,14 +668,14 @@ Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 +	    (imgmaxsect + MIN_FREE_SECT) < dsectors) {
 +		add_fit_subimage_device(bdev, slot++, imgmaxsect,
 +					dsectors - imgmaxsect, false);
-+		dev_info(dev, "mapped remaing space as /dev/fitrw\n");
++		dev_info(dev, "mapped remaining space as /dev/fitrw\n");
 +	}
 +
 +out_bootconf:
 +	kfree(bootconf);
 +	kfree(fit);
 +out_blkdev:
-+	if (!found || ret)
++	if (!slot)
 +		blkdev_put(bdev, &_fitblk_claim_ptr);
 +
 +	return ret;
@@ -714,7 +714,6 @@ Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 +	.probe		= fitblk_probe,
 +	.driver		= {
 +		.name   = "fitblk",
-+		.owner   = THIS_MODULE,
 +	},
 +};
 +

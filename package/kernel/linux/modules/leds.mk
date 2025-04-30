@@ -24,6 +24,23 @@ $(eval $(call KernelPackage,leds-gpio))
 
 LED_TRIGGER_DIR=$(LINUX_DIR)/drivers/leds/trigger
 
+define KernelPackage/led-group-multi-color
+  SUBMENU:=$(LEDS_MENU)
+  TITLE:=LEDs group multi-color support
+  KCONFIG:=CONFIG_LEDS_GROUP_MULTICOLOR
+  FILES:=$(LINUX_DIR)/drivers/leds/rgb/leds-group-multicolor.ko
+  AUTOLOAD:=$(call AutoProbe,led-group-multi-color)
+endef
+
+define KernelPackage/led-group-multi-color/description
+ This option enables support for monochrome LEDs that are grouped
+ into multicolor LEDs which is useful in the case where LEDs of
+ different colors are physically grouped in a single multi-color LED
+ and driven by a controller that does not have multi-color support.
+endef
+
+$(eval $(call KernelPackage,led-group-multi-color))
+
 define KernelPackage/ledtrig-activity
   SUBMENU:=$(LEDS_MENU)
   TITLE:=LED Activity Trigger
@@ -147,11 +164,30 @@ endef
 $(eval $(call KernelPackage,leds-apu))
 
 
+define KernelPackage/leds-ktd202x
+  SUBMENU:=LED modules
+  TITLE:=LED support for KTD202x Chips
+  DEPENDS:=+kmod-i2c-core +kmod-regmap-i2c
+  KCONFIG:=CONFIG_LEDS_KTD202X
+  FILES:= $(LINUX_DIR)/drivers/leds/rgb/leds-ktd202x.ko
+  AUTOLOAD:=$(call AutoProbe,leds-ktd202x,1)
+endef
+
+define KernelPackage/leds-ktd202x/description
+  This option enables support for the Kinetic KTD2026/KTD2027
+  RGB/White LED driver found in different BQ mobile phones.
+  It is a 3 or 4 channel LED driver programmed via an I2C interface.
+endef
+
+$(eval $(call KernelPackage,leds-ktd202x))
+
+
 define KernelPackage/leds-mlxcpld
   SUBMENU:=$(LEDS_MENU)
   TITLE:=LED support for the Mellanox boards
-  FILES:=$(LINUX_DIR)/drivers/leds/leds-mlxcpld.ko
+  DEPENDS:=@TARGET_x86
   KCONFIG:=CONFIG_LEDS_MLXCPLD
+  FILES:=$(LINUX_DIR)/drivers/leds/leds-mlxcpld.ko
   AUTOLOAD:=$(call AutoProbe,leds-mlxcpld)
 endef
 
@@ -212,6 +248,23 @@ define KernelPackage/leds-pwm/description
 endef
 
 $(eval $(call KernelPackage,leds-pwm))
+
+
+define KernelPackage/leds-st1202
+  SUBMENU:=LED modules
+  TITLE:=LED support for ST LED1202 I2C chips
+  DEPENDS:=+kmod-i2c-core +kmod-ledtrig-pattern
+  KCONFIG:=CONFIG_LEDS_ST1202
+  FILES:= $(LINUX_DIR)/drivers/leds/leds-st1202.ko
+  AUTOLOAD:=$(call AutoProbe,leds-st1202)
+endef
+
+define KernelPackage/leds-st1202/description
+  This option enables support for LEDs connected to LED1202
+  LED driver chips accessed via the I2C bus.
+endef
+
+$(eval $(call KernelPackage,leds-st1202))
 
 
 define KernelPackage/leds-tlc591xx

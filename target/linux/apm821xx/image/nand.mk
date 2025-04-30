@@ -50,8 +50,9 @@ define Device/meraki_mx60
   KERNEL := kernel-bin | libdeflate-gzip | MuImage-initramfs gzip
   IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
   UBINIZE_OPTS := -E 5
-  DEVICE_COMPAT_VERSION := 2.0
+  DEVICE_COMPAT_VERSION := 3.0
   DEVICE_COMPAT_MESSAGE := uboot's bootcmd has to be updated to support standard multi-image uImages. \
+       Network swconfig configuration cannot be upgraded to DSA. \
        Upgrade via sysupgrade mechanism is not possible.
 endef
 TARGET_DEVICES += meraki_mx60
@@ -119,8 +120,9 @@ define Device/netgear_wndr4700
   NETGEAR_HW_ID := 29763875+128+256
   UBINIZE_OPTS := -E 5
   SUPPORTED_DEVICES += wndr4700
-  DEVICE_COMPAT_VERSION := 2.0
+  DEVICE_COMPAT_VERSION := 3.0
   DEVICE_COMPAT_MESSAGE := kernel and ubi partitions had to be resized. \
+       Network swconfig configuration cannot be upgraded to DSA. \
        Upgrade via sysupgrade mechanism is not possible.
 endef
 TARGET_DEVICES += netgear_wndr4700

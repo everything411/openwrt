@@ -17,8 +17,7 @@
 	};
 
 	keys {
-		compatible = "gpio-keys-polled";
-		poll-interval = <100>;
+		compatible = "gpio-keys";
 
 		reset {
 			label = "reset";
@@ -127,7 +126,7 @@
 		compatible = "realtek,rtl8367";
 		gpio-sda = <&gpio0 5 GPIO_ACTIVE_HIGH>;
 		gpio-sck = <&gpio0 4 GPIO_ACTIVE_HIGH>;
-		realtek,extif0 = <1 0 1 1 1 1 1 1 2>;
+		realtek,extif = <9 1 0 1 1 1 1 1 1 2>;
 	};
 
 	/*

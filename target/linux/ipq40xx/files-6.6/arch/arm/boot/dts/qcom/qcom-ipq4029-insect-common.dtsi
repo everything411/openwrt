@@ -20,6 +20,8 @@
 
 / {
 	aliases {
+		// TODO: Verify if the ethernet0 alias is needed
+		ethernet0 = &gmac;
 		led-boot = &status_green;
 		led-failsafe = &status_red;
 		led-running = &status_green;
@@ -128,13 +130,17 @@
 		pagesize = <32>;
 		reg = <0x50>;
 		read-only; /* This holds our MAC & Meraki board-data */
-		#address-cells = <1>;
-		#size-cells = <1>;
 
-		mac_address: mac-address@66 {
-			compatible = "mac-base";
-			reg = <0x66 0x6>;
-			#nvmem-cell-cells = <1>;
+		nvmem-layout {
+			compatible = "fixed-layout";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			mac_address: mac-address@66 {
+				compatible = "mac-base";
+				reg = <0x66 0x6>;
+				#nvmem-cell-cells = <1>;
+			};
 		};
 	};
 };
@@ -401,6 +407,10 @@
 	status = "okay";
 	pinctrl-0 = <&mdio_pins>;
 	pinctrl-names = "default";
+
+	ar8035: ethernet-phy@1 {
+		reg = <1>;
+	};
 };
 
 &gmac {
@@ -419,11 +429,19 @@
 	status = "okay";
 
 	label = "lan";
-	phy-handle = <&ethphy1>;
+	phy-handle = <&ar8035>;
 	phy-mode = "rgmii-rxid";
 };
 
+&qca807x {
+	status = "disabled";
+};
+
 &ethphy0 {
+	status = "disabled";
+};
+
+&ethphy1 {
 	status = "disabled";
 };
 
