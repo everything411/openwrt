@@ -2065,7 +2065,7 @@ define Device/mercury_mac2600r
   IMAGE_SIZE := 7808k
   DEVICE_MODEL := MAC2600R
   DEVICE_VENDOR := Mercury
-  DEVICE_PACKAGES += kmod-mt7615d wireless-tools mt_wifi -wpad-openssl
+  DEVICE_PACKAGES += kmod-mt7615-firmware -uboot-envtools
 endef
 TARGET_DEVICES += mercury_mac2600r
 
