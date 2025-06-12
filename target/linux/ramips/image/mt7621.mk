@@ -2074,6 +2074,16 @@ define Device/mercusys_mr70x-v1
 endef
 TARGET_DEVICES += mercusys_mr70x-v1
 
+define Device/mercury_mac2600r
+  $(Device/dsa-migration)
+  $(Device/uimage-lzma-loader)
+  IMAGE_SIZE := 7808k
+  DEVICE_MODEL := MAC2600R
+  DEVICE_VENDOR := Mercury
+  DEVICE_PACKAGES += kmod-mt7615-firmware -uboot-envtools
+endef
+TARGET_DEVICES += mercury_mac2600r
+
 define Device/MikroTik
   $(Device/dsa-migration)
   DEVICE_VENDOR := MikroTik
