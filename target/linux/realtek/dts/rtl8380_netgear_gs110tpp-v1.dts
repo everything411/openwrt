@@ -54,13 +54,13 @@
 	status = "okay";
 };
 
-&mdio {
+&mdio_bus0 {
 	EXTERNAL_PHY(16)
 	EXTERNAL_PHY(17)
 };
 
 &switch0 {
-	ports {
+	ethernet-ports {
 		SWITCH_PORT(16, 9, qsgmii)
 		SWITCH_PORT(17, 10, qsgmii)
 	};

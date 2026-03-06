@@ -24,6 +24,17 @@ yuncore,m300)
 	ucidef_set_led_switch "lan" "lan" "green:lan" "switch0" "0xf"
 	ucidef_set_led_switch "wan" "wan" "green:wan" "switch0" "0x10"
 	;;
+creality,wb-01)
+	ucidef_set_led_switch "lan" "lan" "blue:lan" "switch0" "0x1"
+	;;
+cudy,lt400e-v1)
+	ucidef_set_led_switch "lan1" "lan1" "blue:lan-1" "switch0" "0x08"
+	ucidef_set_led_switch "lan2" "lan2" "blue:lan-2" "switch0" "0x04"
+	ucidef_set_led_switch "lan3" "lan3" "blue:lan-3" "switch0" "0x02"
+	ucidef_set_led_switch "lan4" "lan4" "blue:lan-4" "switch0" "0x01"
+	ucidef_set_led_netdev "wifi" "wifi" "blue:wlan" "phy0-ap0"
+	ucidef_set_led_netdev "internet" "internet" "blue:internet" "usb0"
+	;;
 cudy,wr1000)
 	ucidef_set_led_switch "wan" "wan" "blue:wan" "switch0" "0x10"
 	ucidef_set_led_switch "lan1" "lan1" "blue:lan1" "switch0" "0x08"
@@ -58,6 +69,8 @@ hiwifi,hc5661a|\
 hiwifi,hc5761a)
 	ucidef_set_led_switch "wan" "WAN" "blue:wan" "switch0" "0x10"
 	;;
+keenetic,kn-1112|\
+keenetic,kn-1212|\
 keenetic,kn-1221|\
 keenetic,kn-1613|\
 keenetic,kn-1711|\
@@ -82,6 +95,7 @@ teltonika,rut241)
 	ucidef_set_led_switch "lan" "lan" "green:lan" "switch0" "0x02"
 	ucidef_set_led_switch "wan" "wan" "green:wan" "switch0" "0x01"
 	;;
+teltonika,rut976|\
 teltonika,rut9x1|\
 teltonika,rut9x6)
 	ucidef_set_led_switch "lan1" "lan1" "green:lan-1" "switch0" "0x1"
@@ -108,6 +122,7 @@ tplink,archer-mr200-v6)
 	ucidef_set_led_netdev "lan" "lan" "white:lan" "eth0"
 	ucidef_set_led_netdev "wan" "wan" "white:wan" "wwan0"
 	;;
+cudy,re1200-outdoor-v1|\
 mercusys,mb130-4g-v1|\
 tplink,re200-v2|\
 tplink,re200-v3|\
@@ -134,7 +149,8 @@ tplink,tl-mr6400-v4)
 	ucidef_set_led_switch "lan" "lan" "white:lan" "switch0" "0x0e"
 	ucidef_set_led_switch "wan" "wan" "white:wan" "switch0" "0x10"
 	;;
-tplink,tl-mr6400-v5)
+tplink,tl-mr6400-v5|\
+tplink,tl-mr6400-v7)
 	ucidef_set_led_switch "lan" "lan" "white:lan" "switch0" "0x07"
 	ucidef_set_led_switch "wan" "wan" "white:wan" "switch0" "0x08"
 	;;
@@ -174,6 +190,13 @@ wavlink,wl-wn570ha1)
 	ucidef_set_led_rssi "wifi-med" "wifi-med" "green:wifi-med" "wlan0" "50" "84"
 	ucidef_set_led_rssi "wifi-high" "wifi-high" "green:wifi-high" "wlan0" "85" "100"
 	ucidef_set_led_netdev "wifi_led" "wifi" "green:wifi" "wlan0"
+	;;
+wavlink,wl-wn570ha2)
+	ucidef_set_led_switch "lan" "lan" "blue:lan" "switch0" "0x01"
+	ucidef_set_rssimon "phy1-ap0" "200000" "1"
+	ucidef_set_led_rssi "wifi-low" "wifi-low" "blue:wifi-low" "phy1-ap0" "1" "100"
+	ucidef_set_led_rssi "wifi-med" "wifi-med" "blue:wifi-med" "phy1-ap0" "50" "100"
+	ucidef_set_led_rssi "wifi-high" "wifi-high" "blue:wifi-high" "phy1-ap0" "85" "100"
 	;;
 wavlink,wl-wn575a3)
 	ucidef_set_rssimon "wlan1" "200000" "1"
