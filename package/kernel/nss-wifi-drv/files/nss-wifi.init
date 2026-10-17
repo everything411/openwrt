@@ -6,16 +6,16 @@
 #
 # The radios bind their data path at probe and never rebind, so which path
 # they take is a module parameter and not a runtime switch: it has to be
-# decided before the WLAN driver loads.  The default is host: this service
-# loads the drivers but never writes boot=1, so the NSS core stays down.
+# decided before the WLAN driver loads.  The default is the offload path.
 #
-# An offload is an armed, one-shot experiment:
-#   nss-wifi-arm      set offload-once and reboot
-#   nss-wifi-promote  after a successful boot, make it persistent
+# mode=offload is persistent, but the service still disarms it to host
+# before touching the core, and restores it only after a complete start.
+# A panic or hard hang therefore leaves the next boot on the host path.
+# nss-wifi-arm is the one-shot path for bring-up; nss-wifi-promote makes an
+# offload-once boot persistent.
 #
-# Before any dangerous action the service writes mode=host and syncs, so a
-# panic or hard hang leaves the next boot on the host path.  A stage file and
-# an attempt counter make that decision visible and bound a retry loop.
+# A stage file and an attempt counter make that decision visible and bound a
+# retry loop.
 
 START=19
 USE_PROCD=1
@@ -178,7 +178,10 @@ offload_fail() {
 }
 
 start_offload() {
-	local dir i count last now
+	local requested_mode dir i count last now
+
+	requested_mode=$(uci_get mode)
+	[ -n "$requested_mode" ] || requested_mode=host
 
 	detect_qcn
 
@@ -259,12 +262,14 @@ start_offload() {
 		offload_fail "not every wifili instance started"
 	fi
 
-	# The system is still on the host path by design.  A debug image waits
-	# for a human; auto_promote is the opt-in for a soak.
 	set_stage ok
-	log "offload started on $dir; mode remains host"
+	reset_attempts
 
-	if [ "$auto_promote" = 1 ]; then
+	if [ "$requested_mode" = offload ]; then
+		set_mode offload || offload_fail "could not persist mode=offload"
+		log "offload started on $dir; mode=offload"
+	elif [ "$auto_promote" = 1 ]; then
+		log "offload started on $dir; mode remains host"
 		(
 			sleep 120
 			if [ "$(cat "$dir/boot" 2>/dev/null)" = 1 ] &&
@@ -277,6 +282,7 @@ start_offload() {
 			fi
 		) &
 	else
+		log "offload started on $dir; mode remains host"
 		log "run nss-wifi-promote to keep the offload across boots"
 	fi
 }
@@ -293,9 +299,9 @@ start_service() {
 
 	mode=$(uci_get mode)
 	if [ -z "$mode" ]; then
-		# An old config carries only the on/off field.  It is not an
-		# instruction to try again: host is the default, and the
-		# operator has to arm deliberately.
+		# An old config carries only the on/off field and no mode.
+		# Keep it on host rather than treating it as a request to
+		# try again; the shipped default now sets mode=offload.
 		mode=host
 		[ "$(uci_get offload)" = 1 ] &&
 			log "legacy offload=1 ignored; mode=host (run nss-wifi-arm)"

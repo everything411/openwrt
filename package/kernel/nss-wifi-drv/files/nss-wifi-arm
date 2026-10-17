@@ -1,7 +1,9 @@
 #!/bin/sh
 # SPDX-License-Identifier: GPL-2.0-only
-# Arm one offload attempt.  The next boot runs it with mode already set to
-# host, so a hang leaves the boot after that one on the host path.
+# Arm one offload attempt from the host path.  The shipped default is
+# mode=offload; set mode=host first when a one-shot bring-up is wanted.
+# The next boot runs the attempt with mode already set to host, so a hang
+# leaves the boot after that one on the host path.
 
 set -u
 
@@ -10,7 +12,7 @@ ATTEMPTS=/etc/nss-wifi.attempts
 
 mode=$(uci -q get nss-wifi.general.mode 2>/dev/null)
 if [ -z "$mode" ]; then
-	# An old offload=1 is not an armed attempt; host stays the default.
+	# No mode means the conservative host path for an old config.
 	mode=host
 fi
 no_ahb=$(uci -q get nss-wifi.general.no_ahb 2>/dev/null)
